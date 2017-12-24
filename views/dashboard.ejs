@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			.line{
+				font-size: 40px;
+			}
+		</style>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="./public/lib/parsley.js"></script>
+		<link rel="stylesheet" href="./public/lib/parsley.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+<script>
+function startTime() {
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    m = checkTime(m);
+    s = checkTime(s);
+    document.getElementById('txt').innerHTML =
+    h + ":" + m + ":" + s;
+    var t = setTimeout(startTime, 500);
+}
+function checkTime(i) {
+    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+}
+</script>
+	</head>
+	<body onload="startTime()">
+		<style>
+			.phone_container{
+				border: 1px solid #000;
+				border-radius: 5px;
+				padding: 10px 5px;
+				width:500px;
+				position: relative;
+				margin-bottom: 10px
+			}
+			.wait_time{
+				position: absolute;
+				right: 0px;
+				bottom:0px;
+				color:#666;
+
+			}
+		</style>
+		
+		<div class="container">
+			<h2>The next in line is...</h2>
+			<div id="txt"></div>
+			<div id="output">
+				<!-- <div class="phone_container">
+					1234
+					<div class="wait_time">-8 minutes</div>
+				</div>
+				<br> -->
+
+			</div>
+			<!-- <button class="finish">Finished</button> -->
+		</div>
+	</body>
+
+	<script>
+	
+	console.log($('.finish'));
+	// $('.finish').on('click',function(){
+	// 	console.log('click!');
+	// })
+	$(document).ready(function(){
+
+
+		var people_ahead=0;
+		var estimate_individual_wait=5;
+		function spillString(phone,people_ahead,phone_id){
+			var string='<div data-id='+phone_id+' class="biggy">';
+			string+='<div class="phone_container">'+phone+'<div class="wait_time">'+(people_ahead*5)+' minutes</div>';
+
+
+			string+='</div>';
+			// string+='<button class="finish">Finished</button>'
+			string+="</div>"
+
+			return string;
+
+		}
+		// var socket = io.connect("http://localhost:3000/dashboard");
+		var socket=io();
+		socket.on('submit',function(data){
+			console.log(123);
+			people_ahead++;
+			// $('#output').html(data.phone_number);
+			// $('<div class="line">'+data.phone_number+'</div>').appendTo('#output');
+			$(spillString(data.phone_number,people_ahead,data.id)).appendTo('#output');
+			$('.finish').click(function(){
+				console.log($(this));
+
+				$(this).closest('.biggy').remove();
+			});
+		});
+		socket.on('delete',function(data){
+			console.log('delete');
+			$('.biggy[data-id="'+data.id+'"]').remove();
+		});
+
+	});
+	</script>
+</html>

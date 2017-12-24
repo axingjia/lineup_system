@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			.form{
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+
+			@media screen and (min-width: 550px) {
+			    input.input{
+			    	width: 550px;
+			    }
+			}
+		</style>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="./public/lib/parsley.js"></script>
+<link rel="stylesheet" href="./public/lib/parsley.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+	</head>
+	<body>
+		<section style='background: url("./public/sfu_bg.jpg") 0% 0% / cover no-repeat; height: 900px;'>
+		<div class="form" style="height:480px">
+			<form data-parsley-validate>
+			<input class="input" parsley-type="number" required  onkeypress='return event.charCode >= 48 && event.charCode <= 57' data-parsley-minlength-message = "Please Enter A Valid Phone Number (Too little Digits)" data-parsley-maxlength-message = "Please Enter A Valid Phone Number (Too many Digits)" data-parsley-maxlength="10" data-parsley-minlength="10" >
+</input>
+			<div>
+
+				<div class="row" style="margin-top:5px">
+					<button type="button" class="num btn-default col-xs-4" value="1">1</button>
+					<button type="button" class="num btn-default col-xs-4" value="2">2</button>
+					<button type="button" class="num btn-default col-xs-4" value="3">3</button>
+				</div>
+				<div class="row" style="margin-top:5px">
+					<button type="button" class="num btn-default col-xs-4" value="4">4</button>
+					<button type="button" class="num btn-default col-xs-4" value="5">5</button>
+					<button type="button" class="num btn-default col-xs-4" value="6">6</button>
+				</div>
+				<div class="row" style="margin-top:5px">
+					<button type="button" class="num btn-default col-xs-4" value="7">7</button>
+					<button type="button" class="num btn-default col-xs-4" value="8">8</button>
+					<button type="button" class="num btn-default col-xs-4" value="9">9</button>
+				</div>
+				<div class="row" style="margin-top:5px">
+					<button type="button" class="btn-danger col-sm-5">Cancel</button>
+					<button type="button" class="submit btn-success col-sm-5 col-sm-offset-2">Enter</button>
+
+				</div>
+			</div>
+		</form>
+		</div>
+		</section>
+	</body>
+	<script>
+		$('form').parsley();
+		$('.num').click(function(){
+			console.log($(this).val());
+			$('input').val($('input').val()+$(this).val());
+		})
+
+
+		// var socket = io.connect("http://localhost:3000");
+		var socket=io();
+
+		$('.submit').click(function(){
+			console.log('it clicks');
+			socket.emit('submit',{
+				phone_number:$('input').val()
+			});
+		})
+
+		socket.on('submit',function(data){
+			console.log(123);
+			// $('#output').val(data.phone_number);
+		})
+		
+		
+	</script>
+
+</html>

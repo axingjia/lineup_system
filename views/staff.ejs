@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="./public/lib/parsley.js"></script>
+<link rel="stylesheet" href="./public/lib/parsley.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<h2>Staff List</h2>
+			<div id="list"></div>
+
+			
+		</div>
+	</body>
+	<script>
+		
+		var socket=io();
+		
+		socket.on('submit',function(data){
+			$('<div data-phone='+data.phone_number+' data-id='+data.id+' class="line">ID:'+data.id+' '+data.phone_number+'<button class="delete">Delete</button></div>').appendTo('#list');
+			$('.delete').click(function(){
+				console.log('delete clicks');
+				$line=$(this).closest('.line');
+
+				socket.emit('delete',{
+					phone_number:$line.data('phone'),
+					id:$line.data('id')
+				});
+				$line.remove();
+			})
+
+		});
+
+
+	</script>
+
+</html>
